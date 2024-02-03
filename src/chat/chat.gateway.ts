@@ -6,6 +6,8 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { ChatService } from 'src/chat/chat.service';
+import { MessageDto } from 'src/chat/dto/message.dto';
 
 @WebSocketGateway({
   cors: {
@@ -14,6 +16,8 @@ import { Server, Socket } from 'socket.io';
   namespace: '/v1',
 })
 export class ChatGateway {
+  constructor(private chatService: ChatService) {}
+
   @WebSocketServer()
   server: Server;
 
@@ -21,11 +25,19 @@ export class ChatGateway {
   handleConnection(@ConnectedSocket() client: Socket): void {
     // Handle new connection
     console.log(client);
-    this.server.emit('message', 'Hello from server');
+    client.emit('message', 'Server Connection Established!');
   }
+
   @SubscribeMessage('message')
-  handleMessage(@MessageBody() data: string): void {
-    this.server.emit('message', data);
+  async handleMessage(
+    @MessageBody() message: MessageDto,
+    // @ConnectedSocket() client: Socket,
+  ) {
+    console.log(message);
+    const response = await this.chatService.processMessage(message);
+
+    // broadcast to all connected clients
+    this.server.emit('message', response);
   }
 
   @SubscribeMessage('disconnect')
