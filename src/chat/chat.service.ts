@@ -1,13 +1,20 @@
 // chat.service.ts
 import { Injectable } from '@nestjs/common';
-import { MessageDto } from 'src/chat/dto/message.dto';
+import { MessageResponse } from 'src/chat/types/messageReponse';
 
 @Injectable()
 export class ChatService {
-  async processMessage(message: MessageDto): Promise<any> {
+  async processMessage(message: string): Promise<MessageResponse> {
     // Process the message
     // For example, save the message to the database or perform some business logic
 
-    return { ack: true, content: message }; // Example response
+    return {
+      ack: true,
+      content: {
+        nickname: 'John Doe',
+        message: message as any,
+        timestamp: new Date().toISOString(),
+      },
+    }; // Example response
   }
 }

@@ -7,7 +7,6 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from 'src/chat/chat.service';
-import { MessageDto } from 'src/chat/dto/message.dto';
 
 @WebSocketGateway({
   cors: {
@@ -30,7 +29,7 @@ export class ChatGateway {
 
   @SubscribeMessage('message')
   async handleMessage(
-    @MessageBody() message: MessageDto,
+    @MessageBody() message: string,
     // @ConnectedSocket() client: Socket,
   ) {
     console.log(message);
