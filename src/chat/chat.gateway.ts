@@ -13,7 +13,7 @@ import { Server, Socket } from 'socket.io';
   },
   namespace: '/v1',
 })
-export class EventsGateway {
+export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
